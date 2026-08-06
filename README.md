@@ -47,3 +47,13 @@ Este ejercicio contiene una introducción a la programación con hilos en Java, 
     
    ![checkHost.png](/img/checkhost.png)
 
+
+**Resultados** 
+
+resulado primera prueba con 3 hilos.
+
+![prueba1.png](/img/prueba1.png)
+
+resultado segunda prueba con 8 hilos
+
+![prueba2.png](/img/prueba2.png)
