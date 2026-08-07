@@ -69,8 +69,81 @@ A partir de lo anterior, implemente la siguiente secuencia de experimentos para 
 4. 50 hilos.
 5. 100 hilos.
 
-Al iniciar el programa ejecute el monitor jVisualVM, y a medida que corran las pruebas, revise y anote el consumo de CPU y de memoria en cada caso. ![](img/jvisualvm.png)
 
-Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tiempo de solución vs. número de hilos. Analice y plantee hipótesis con su compañero para las siguientes preguntas (puede tener en cuenta lo reportado por jVisualVM):
 
+Para esta parte se realizaron 5 pruebas de ejecución usando el host disperso `202.24.34.55`, variando el número de hilos (N), y se midió el tiempo de ejecución reportado por el propio programa. Las pruebas se hicieron todas en la misma máquina (procesador AMD A12-9730P, 4 núcleos), y en paralelo se usó jVisualVM para observar el comportamiento de CPU y memoria durante cada corrida.
+
+
+Para esta parte se realizaron 5 pruebas de ejecución usando el host disperso `202.24.34.55`, variando el número de hilos (N), y se midió el tiempo de ejecución reportado por el propio programa. Las pruebas se hicieron todas en la misma máquina (procesador AMD A12-9730P, 4 núcleos), y en paralelo se usó jVisualVM para observar el comportamiento de CPU y memoria durante cada corrida.
+
+![PARTE3_1.png](img/PARTE3_1.png)![Maquina.png](img/Maquina.png)
+
+
+Antes de correr el programa, en la lista de "Local" de jVisualVM solo aparece el proceso de IntelliJ IDEA, ya que aún no se había ejecutado nuestro programa
+
+![PARTE3_2.png](img/PARTE3_2.png)
+
+Al correr `Main.java`, jVisualVM detecta automáticamente el nuevo proceso `edu.eci.arsw.blacklistvalidator.Main`, con un PID distinto al de IntelliJ. Ese es el proceso que se monitoreó durante cada prueba.
+ 
+![PARTE3_3.png](img/PARTE3_3.png)
+
+**Prueba 1: N = 1 hilo**
+
+![PARTE3_5.png](img/PARTE3_5.png)
+
+Después de ingresar `1` como número de hilos, se ve un pequeño pico en la gráfica de CPU. Como solo se usa un hilo, el consumo de CPU es bajo, ya que solo se aprovecha uno de los 4 núcleos disponibles.
+
+![PARTE3_6.png](img/PARTE3_6.png)
+
+En el log completo de esta ejecución se puede ver que el único hilo (`Hilo-0`) revisó las 80000 listas negras completas, encontró las 5 ocurrencias esperadas en las listas #29, #10034, #20200, #31000 y #70500, y reportó el host como no confiable. El tiempo total fue de **136184 ms**.
+
+**Prueba 2: N = 4 hilos (núcleos)**
+
+![PARTE3_7.png](img/PARTE3_7.png)![PARTE3_8.png](img/PARTE3_8.png)
+
+Con 4 hilos, el trabajo se repartió en rangos de 20000 listas por hilo (80000÷4). Cada hilo encontró parte de las 5 ocurrencias totales. El tiempo bajó a **35193 ms**, casi 4 veces más rápido que con 1 solo hilo, lo cual tiene sentido porque el procesador usado tiene exactamente 4 núcleos.
+
+**Prueba 3: N = 8 hilos (2 x núcleos)**
+
+
+![PARTE3_9.png](img/PARTE3_9.png)![PARTE3_10.png](img/PARTE3_10.png)
+
+En esta prueba el tiempo bajó a **15260 ms**. Aquí ya se usó el doble de hilos que de núcleos, así que cada núcleo tuvo que turnarse entre 2 hilos. Aun así el tiempo siguió bajando, porque cada validación de host tiene una pequeña pausa simulada, y mientras un hilo está en esa pausa el sistema aprovecha para atender a otro hilo.
+
+**Prueba 4: N = 50 hilos**
+
+
+![PARTE3_11.png](img/PARTE3_11.png)![PARTE3_12.png](img/PARTE3_12.png)
+
+**Prueba 5: N = 100 hilos**
+
+![PARTE3_13.png](img/PARTE3_13.png)![PARTE3_14.png](img/PARTE3_14.png)
+
+Finalmente, con 100 hilos el tiempo fue de **2389 ms**, muy parecido al de 50 hilos. Aquí se ve claramente que agregar más hilos ya casi no mejora el desempeño: se llega a un punto donde el cuello de botella deja de ser el número de hilos y pasa a ser el número de núcleos reales del procesador.
+
+**Tabla de resultados**
+
+| Hilos           | Tiempo (ms) | Speedup vs. 1 hilo |
+|-----------------|-------------|---------------------|
+| 1               | 136184      | 1x                  |
+| 4 (núcleos)     | 35193       | 3.87x               |
+| 8 (2x núcleos)  | 15260       | 8.93x               |
+| 50              | 2629        | 51.8x               |
+| 100             | 2389        | 57x                 |
+
+**Gráfica: tiempo de solución vs. número de hilos**
+
+![GRAFICA.png](img/GRAFICA.png)
+
+**Análisis**
+
+Con estos resultados se puede ver que el tiempo de ejecución disminuye mucho al principio, sobre todo al pasar de 1 a 8 hilos. Después la mejora ya no es tan grande; por ejemplo, entre 50 y 100 hilos el tiempo solo baja de 2629 ms a 2389 ms, aunque se haya duplicado la cantidad de hilos.
+
+Esto tiene sentido porque el computador tiene 4 núcleos físicos, así que solo puede ejecutar 4 hilos al mismo tiempo. Los demás deben esperar, por lo que llega un punto en el que agregar más hilos ya no mejora tanto el rendimiento.
+
+Sin embargo, nos llamó la atención que al pasar de 8 a 50 hilos todavía hubiera una mejora considerable. Creemos que esto ocurre porque cada validación tiene una pequeña pausa simulada. Mientras un hilo está esperando, el procesador puede ejecutar otro, aprovechando mejor el tiempo disponible. Por eso, en este caso, usar más hilos que núcleos sigue dando buenos resultados hasta cierto límite.
+
+También vimos que pasar de 4 a 8 hilos redujo el tiempo de 35193 ms a 15260 ms. Esto muestra que, para este laboratorio, duplicar el número de hilos respecto a los núcleos todavía aporta una mejora importante.
+
+Finalmente, si en lugar de ejecutar 100 hilos en un solo computador se usaran 100 computadores con un hilo cada uno, el paralelismo sería mayor porque cada hilo tendría su propio procesador. Sin embargo, aparecerían otros costos, como la comunicación entre las máquinas y la sincronización de los resultados, que en este laboratorio no tuvimos porque todo se ejecutó en un mismo equipo.
 
