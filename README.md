@@ -162,3 +162,12 @@ Durante el laboratorio observamos que utilizar el doble de hilos que de núcleos
 Si en lugar de ejecutar 100 hilos en un solo computador se utilizaran 100 máquinas, cada una ejecutando un único hilo, el paralelismo sería mayor porque cada hilo tendría su propio procesador y no tendría que competir por los mismos núcleos. En este escenario, el comportamiento estaría más cerca del ideal planteado por la ley de Amdahl.
 
 Si, en cambio, se utilizaran **c** hilos distribuidos en **100/c** máquinas, también se obtendría una mejora, siempre que cada máquina tenga suficientes núcleos para ejecutarlos. No obstante, aparecería un costo adicional asociado a la comunicación entre las máquinas y a la sincronización de los resultados, algo que no ocurre cuando toda la ejecución se realiza en un único computador con memoria compartida.
+
+## Bibliografia
+
+
+- Amdahl, G. M. (1967). *Validity of the single processor approach to achieving large scale computing capabilities*. AFIPS Conference Proceedings, 30, 483–485. https://doi.org/10.1145/1465482.1465560
+
+- Goetz, B., Peierls, T., Bloch, J., Bowbeer, J., Holmes, D., & Lea, D. (2006). *Java Concurrency in Practice*. Addison-Wesley Professional.
+
+- HowToDoInJava. (2023). *wait(), notify() and notifyAll() Methods in Java*. https://howtodoinjava.com/java/multi-threading/wait-notify-and-notifyall-methods/
