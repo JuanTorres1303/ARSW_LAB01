@@ -13,7 +13,7 @@
 Este ejercicio contiene una introducción a la programación con hilos en Java, además de la aplicación a un caso concreto.
 
 
-**Parte I - Introducción a Hilos en Java**
+## Parte I - Introducción a Hilos en Java**
 
 1. De acuerdo con lo revisado en las lecturas, complete las clases CountThread, para que las mismas definan el ciclo de vida de un hilo que imprima por pantalla los números entre A y B.
 
@@ -34,7 +34,7 @@ Este ejercicio contiene una introducción a la programación con hilos en Java, 
       ![resultado3.png](img%2Fresultado3.png)
       - como podemos evidencial al momento de ejecutar los hilos con .start() el resultado se puede ver en desorden ya que  
 
-**Parte II - Ejercicio Black List Search**
+## Parte II - Ejercicio Black List Search**
 
    1. Cree una clase de tipo Thread que represente el ciclo de vida de un hilo que haga la búsqueda de un segmento del conjunto de servidores disponibles. Agregue a dicha clase un método que permita 'preguntarle' a las instancias del mismo (los hilos) cuantas ocurrencias de servidores maliciosos ha encontrado o encontró.
     ![ClaseHilo2.png](/img/ClaseHilo2.png)
@@ -59,7 +59,7 @@ resultado segunda prueba con 8 hilos
 ![prueba2.png](/img/prueba2.png)
 
 
-**Parte III - Evaluación de Desempeño**
+## Parte III - Evaluación de Desempeño**
 
 A partir de lo anterior, implemente la siguiente secuencia de experimentos para realizar las validación de direcciones IP dispersas (por ejemplo 202.24.34.55), tomando los tiempos de ejecución de los mismos (asegúrese de hacerlos en la misma máquina):
 
@@ -147,3 +147,18 @@ También vimos que pasar de 4 a 8 hilos redujo el tiempo de 35193 ms a 15260 ms.
 
 Finalmente, si en lugar de ejecutar 100 hilos en un solo computador se usaran 100 computadores con un hilo cada uno, el paralelismo sería mayor porque cada hilo tendría su propio procesador. Sin embargo, aparecerían otros costos, como la comunicación entre las máquinas y la sincronización de los resultados, que en este laboratorio no tuvimos porque todo se ejecutó en un mismo equipo.
 
+## Parte IV - Ejercicio Black List Search
+
+#### 1. Según la ley de Amdahl
+
+La ley de Amdahl establece que el rendimiento no mejora indefinidamente al aumentar el número de hilos, ya que siempre existe una parte del programa que no puede ejecutarse en paralelo. En nuestro caso, el computador cuenta con 4 núcleos físicos, por lo que crear 200 o 500 hilos no significa que todos puedan ejecutarse al mismo tiempo. A partir de cierto punto, los hilos adicionales solo esperan su turno y generan más cambios , por lo que la mejora es cada vez menor, por eso  el desempeño con 500 hilos es muy similar al obtenido con 200 hilos y la diferencia en el tiempo de ejecución es mínima.
+
+#### 2. Comparación entre usar tantos hilos como núcleos y usar el doble
+
+Durante el laboratorio observamos que utilizar el doble de hilos que de núcleos sí mejoró el rendimiento. Al pasar de 4 a 8 hilos el tiempo de ejecución disminuyó considerablemente. Esto ocurre porque cada validación incluye una pequeña pausa simulada; mientras un hilo está esperando, el sistema operativo puede ejecutar otro y aprovechar mejor el procesador. Sin embargo, esta mejora solo se mantiene hasta cierto punto, ya que al seguir aumentando la cantidad de hilos el beneficio empieza a disminuir.
+
+#### 3. Uso de múltiples máquinas
+
+Si en lugar de ejecutar 100 hilos en un solo computador se utilizaran 100 máquinas, cada una ejecutando un único hilo, el paralelismo sería mayor porque cada hilo tendría su propio procesador y no tendría que competir por los mismos núcleos. En este escenario, el comportamiento estaría más cerca del ideal planteado por la ley de Amdahl.
+
+Si, en cambio, se utilizaran **c** hilos distribuidos en **100/c** máquinas, también se obtendría una mejora, siempre que cada máquina tenga suficientes núcleos para ejecutarlos. No obstante, aparecería un costo adicional asociado a la comunicación entre las máquinas y a la sincronización de los resultados, algo que no ocurre cuando toda la ejecución se realiza en un único computador con memoria compartida.
