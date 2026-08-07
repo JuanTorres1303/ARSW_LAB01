@@ -57,3 +57,20 @@ resulado primera prueba con 3 hilos.
 resultado segunda prueba con 8 hilos
 
 ![prueba2.png](/img/prueba2.png)
+
+
+**Parte III - Evaluación de Desempeño**
+
+A partir de lo anterior, implemente la siguiente secuencia de experimentos para realizar las validación de direcciones IP dispersas (por ejemplo 202.24.34.55), tomando los tiempos de ejecución de los mismos (asegúrese de hacerlos en la misma máquina):
+
+1. Un solo hilo.
+2. Tantos hilos como núcleos de procesamiento (haga que el programa determine esto haciendo uso del [API Runtime](https://docs.oracle.com/javase/7/docs/api/java/lang/Runtime.html)).
+3. Tantos hilos como el doble de núcleos de procesamiento.
+4. 50 hilos.
+5. 100 hilos.
+
+Al iniciar el programa ejecute el monitor jVisualVM, y a medida que corran las pruebas, revise y anote el consumo de CPU y de memoria en cada caso. ![](img/jvisualvm.png)
+
+Con lo anterior, y con los tiempos de ejecución dados, haga una gráfica de tiempo de solución vs. número de hilos. Analice y plantee hipótesis con su compañero para las siguientes preguntas (puede tener en cuenta lo reportado por jVisualVM):
+
+
